@@ -1,34 +1,42 @@
-const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
+// data.js
+import fetch from 'node-fetch';
+import fs from 'fs';
+import path from 'path';
 
-const dataFilePath = path.join(__dirname, '..', 'data.json');
+// Define the path to the data.json file
+const dataFilePath = path.join(process.cwd(), 'data.json');
 
-// Function to fetch additional data for each channel
+// Function to fetch additional data from the API
 const fetchChannelData = async (id) => {
   const apiUrl = `https://fox.toxic-gang.xyz/jplus/key/${id}`;
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {
-      throw new Error(`Network response was not ok: ${response.statusText}`);
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
     return response.json();
   } catch (error) {
-    console.error('Error fetching channel data:', error);
+    console.error(`Error fetching data for ID ${id}:`, error);
     return null;
   }
 };
 
-// Function to update the data.json file with new information
+// Function to update data.json with new information
 const updateDataFile = async () => {
   try {
-    // Read the existing data
+    // Read the existing data from data.json
     const existingData = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
+
+    // Create an array to store the updated data
     const updatedData = [];
 
+    // Loop through each channel in the existing data
     for (const channel of existingData) {
+      // Fetch the additional data for the current channel
       const details = await fetchChannelData(channel.id);
+
       if (details) {
+        // Update the channel object with the fetched data
         const updatedChannel = {
           ...channel,
           url: details[0]?.data?.initialUrl || '',
@@ -40,6 +48,9 @@ const updateDataFile = async () => {
           }
         };
         updatedData.push(updatedChannel);
+      } else {
+        // If fetching data failed, keep the original channel data
+        updatedData.push(channel);
       }
     }
 
@@ -51,8 +62,5 @@ const updateDataFile = async () => {
   }
 };
 
-module.exports = async (req, res) => {
-  await updateDataFile();
-  res.setHeader('Content-Type', 'application/json');
-  fs.createReadStream(dataFilePath).pipe(res);
-};
+// Run the updateDataFile function
+updateDataFile();
