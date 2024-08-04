@@ -1,4 +1,9 @@
-/* styles.css */
+/* style.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
 #channelGridContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -22,4 +27,13 @@
 
 .channel-card h3 {
   margin: 10px 0;
+}
+
+#playerContainer {
+  padding: 20px;
+}
+
+#jwplayerDiv {
+  width: 100%;
+  height: 500px; /* Adjust as needed */
 }
