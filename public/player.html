@@ -23,26 +23,17 @@
       throw new Error('ID is required');
     }
 
-    // Fetch the data for the given ID
-    fetch(`/api/data?id=${id}`)
+    // Fetch the updated data for the given ID
+    fetch('/data.json')
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched data:', data); // Debugging: log the fetched data
-        if (data[0].data && data[0].keys && data[0].keys.keys.length > 0) {
-          const fileUrl = data[0].data.initialUrl;
-          const keyId = data[0].keys.keys[0].kid;
-          const key = data[0].keys.keys[0].k;
-          const licence1 = data[0].data.licence1;
-          const licence2 = data[0].data.licence2;
+        const channel = data.find(ch => ch.id === id);
 
-          console.log('File URL:', fileUrl); // Debugging: log the file URL
-          console.log('Key ID:', keyId); // Debugging: log the Key ID
-          console.log('Key:', key); // Debugging: log the Key
-          console.log('Licence1:', licence1); // Debugging: log Licence1
-          console.log('Licence2:', licence2); // Debugging: log Licence2
+        if (channel) {
+          const { url, drm } = channel;
 
           jwplayer("jwplayerDiv").setup({
-            file: fileUrl,
+            file: url,
             position: 'bottom',
             autostart: true,
             stretching: "fill",
@@ -50,40 +41,13 @@
             type: "dash",
             drm: {
               clearkey: {
-                keyId: keyId,
-                key: key
+                keyId: drm.keyId,
+                key: drm.key
               }
             }
           });
-
-          // Use licence1 and licence2 in some way if needed
-          // For example, if they need to be passed as headers in a custom license server request:
-          /*
-          jwplayer("jwplayerDiv").setup({
-            file: fileUrl,
-            position: 'bottom',
-            autostart: true,
-            stretching: "fill",
-            width: "100%",
-            type: "dash",
-            drm: {
-              clearkey: {
-                keyId: keyId,
-                key: key
-              },
-              servers: {
-                'com.widevine.alpha': {
-                  url: licence1,
-                  headers: {
-                    'Authorization': `Bearer ${licence2}`
-                  }
-                }
-              }
-            }
-          });
-          */
         } else {
-          console.error('Invalid data structure:', data);
+          document.body.innerHTML = '<p>Channel not found.</p>';
         }
       })
       .catch(error => console.error('Error fetching data:', error));
