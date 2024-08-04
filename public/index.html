@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Channel Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Channel Home</h1>
+    <div class="channel-grid" id="channelGrid"></div>
+  </div>
+
+  <script>
+    // Fetch the data.json file
+    fetch('/data.json')
+      .then(response => response.json())
+      .then(data => {
+        const channelGrid = document.getElementById('channelGrid');
+
+        data.forEach(channel => {
+          const channelCard = document.createElement('div');
+          channelCard.className = 'channel-card';
+          channelCard.innerHTML = `
+            <img src="https://via.placeholder.com/200x100.png?text=${channel.title}" alt="${channel.title}">
+            <a href="player.html?id=${channel.data.id}">${channel.title}</a>
+          `;
+          channelGrid.appendChild(channelCard);
+        });
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  </script>
+</body>
+</html>
