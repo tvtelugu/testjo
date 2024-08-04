@@ -1,0 +1,36 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  padding: 20px;
+}
+
+.channel-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.channel-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 10px;
+  padding: 10px;
+  width: 200px;
+  text-align: center;
+}
+
+.channel-card img {
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+.channel-card a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  margin-top: 10px;
+  font-size: 16px;
+}
